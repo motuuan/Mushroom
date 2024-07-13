@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安心吃菌</title>
+    <style>
+        .logo {
+            display: block;
+            margin: 10px auto 20px; /* 上下边距10px，右边距auto，下方增加20px间距 */
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; background: url('{{ url_for('static', filename='images/loginback2.jpg') }}');  no-repeat center center fixed; background-size: cover;">
+    <div class="container" style="background-color: rgba(255, 255, 255, 0.8); padding: 40px 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center; width: 90%; max-width: 400px; margin-top: 10px;">
+        <div class="login-box">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+            <h1 style="font-size: 2em; margin-bottom: 0.5em;">立刻登录</h1>
+            <h2 style="font-size: 1.5em; margin-bottom: 1em;">认识你的菌子</h2>
+            <p style="font-size: 1em; margin-bottom: 1.5em;">现在就上传你的图片，让AI看看你的菌子是否能吃~</p>
+            <form action="{{ url_for('user.login') }}" method="POST">
+                <input type="text" name="username" placeholder="请输入用户名" style="width: calc(100% - 20px); padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+                <input type="password" name="password" placeholder="请输入密码" style="width: calc(100% - 20px); padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+                <div class="form-actions" style="margin-top: 20px;">
+                    <button type="submit" class="main-button" style="width: 100%; padding: 10px 20px; border: none; border-radius: 5px; background-color: #333; color: #fff; font-size: 1em; cursor: pointer;">登录</button>
+                    <a href="#" class="forgot-password" style="display: block; margin-top: 10px; color: #333; text-decoration: none;">忘记密码</a>
+                </div>
+                <div class="register-link" style="margin-top: 20px;">
+                    <p style="font-size: 1em; color: #333;">您还没有账号？ <a href="{{ url_for('user.register') }}" style="color: #007BFF; text-decoration: none;">立即注册</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% if message %}
+    <script>
+        alert("{{ message }}");
+    </script>
+    {% endif %}
+</body>
+</html>

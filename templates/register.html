@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安心吃菌</title>
+    <style>
+        .logo {
+            display: block;
+            margin: 10px auto 20px; /* 上下边距10px，右边距auto，下方增加20px间距 */
+            max-width: 100%;
+            height: auto;
+        }
+
+        .register-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            margin-top: 10px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+        }
+
+        p {
+            font-size: 1em;
+            margin-bottom: 1.5em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .gender-inputs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .gender-inputs label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .gender-inputs input[type="radio"] {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; background: url('{{ url_for('static', filename='images/loginback2.jpg') }}') no-repeat center center fixed; background-size: cover;">
+    <div class="container">
+        <div class="register-form">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+            <h1 style="font-size: 2em; margin-bottom: 0.5em;">立即注册</h1>
+            <form action="{{ url_for('user.register') }}" method="post">
+                <input type="text" name="username" placeholder="输入用户名" required>
+                <input type="email" name="email" placeholder="输入邮箱" required style="width: calc(100% - 20px);">
+                <input type="password" name="password" placeholder="输入密码" required>
+                <input type="password" name="confirmpassword" placeholder="再次输入密码" required>
+                <div class="gender-inputs">
+                    <label for="male">男</label>
+                    <input id="male" type="radio" name="gender" value="male" checked>
+                    <label for="female">女</label>
+                    <input id="female" type="radio" name="gender" value="female">
+                </div>
+                <button type="submit" class="main-button">确认注册</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .button-link {
+            display: inline-block;
+            background-color: #007bff;
+            color: white; /* 改变文字颜色为白色 */
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-link:hover {
+            background-color: #0056b3; /* 鼠标悬停时按钮颜色加深 */
+        }
+        .header img {
+            height: 40px;
+        }
+        .header a {
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .container {
+            width: 50%;
+            margin: 40px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            margin-bottom: 10px;
+            font-size: 24px; /* 增大标题字体大小 */
+            color: #333;
+            text-align: center; /* 居中对齐 */
+        }
+        .section p {
+            margin: 5px 0;
+            text-align: center;
+        }
+        .section p span {
+            font-weight: bold; /* 加粗用户名 */
+        }
+        .section label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .section input, .section select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .section button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .section button:hover {
+            background-color: #0056b3;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .account-management-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .account-management-form button {
+            width: 50%;
+            margin-top: 10px;
+        }
+        .link-button {
+            font-size: 12px; /* 字体大小 */
+            text-decoration: none; /* 移除默认下划线 */
+            transition: color 0.3s, text-decoration 0.3s; /* 平滑过渡效果 */
+        }
+        .link-button.delete-account {
+            color: gray; /* 默认字体颜色 */
+        }
+        .link-button.delete-account:hover {
+            color: red; /* 鼠标悬停时的颜色 */
+            text-decoration: underline; /* 鼠标悬停时显示下划线 */
+        }
+        .link-button.logout {
+            color: gray; /* 默认字体颜色 */
+        }
+        .link-button.logout:hover {
+            color: blue; /* 鼠标悬停时的颜色 */
+            text-decoration: underline; /* 鼠标悬停时显示下划线 */
+        }
+        .link-button.left {
+            align-self: flex-start;
+        }
+        .link-button.right {
+            align-self: flex-end;
+        }
+        .account-management h2 {
+            font-size: 20px; /* 调整账号管理标题的字体大小 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="{{ url_for('static', filename='images/logo-black.png') }}"  alt="Logo">
+    <a href="{{ url_for('user.dashboard') }}" class="button-link">回到主页</a>
+</div>
+
+<div class="container">
+    <div class="section">
+        <h2 class="centered-title">个人信息</h2>
+        <p class="centered-text">用户名: <span>{{ user.username }}</span></p>
+    </div>
+
+    <div class="section account-management">
+        <h2>账号管理</h2>
+        <form action="{{ url_for('user.update_info') }}" method="post" class="account-management-form">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}">
+            <label for="gender">性别</label>
+            <select id="gender" name="gender">
+                <option value="">请选择性别</option>
+                <option value="male" {% if user.gender == 'male' %}selected{% endif %}>男</option>
+                <option value="female" {% if user.gender == 'female' %}selected{% endif %}>女</option>
+            </select>
+            <label for="password">新密码</label>
+            <input type="password" id="password" name="password">
+            <button type="submit" class="centered-button">更新信息</button>
+        </form>
+        <div class="button-container">
+            <a href="{{ url_for('user.delete_account') }}" class="link-button delete-account left">删除账号</a>
+            <a href="{{ url_for('user.logout') }}" class="link-button logout right">退出登录</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

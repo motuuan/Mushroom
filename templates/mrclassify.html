@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安心吃菌 识你所食</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+        }
+        .carousel {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 1s ease-in-out;
+        }
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header .overlay h1 {
+            font-size: 4em;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .header .overlay p {
+            font-size: 2em;
+            margin: 20px 0;
+            letter-spacing: 1px;
+        }
+        .header .logo {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+        }
+        .header .user-center {
+            position: absolute;
+            top: 20px;
+            right: 100px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .carousel-indicators div {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            margin: 0 5px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .carousel-indicators .active {
+            transform: scale(1.5);
+        }
+        .content {
+            padding: 20px;
+        }
+        .image-recognition {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 60px;
+            margin-left: 60px;
+        }
+        .image-recognition .image-area {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+            position: relative;
+            margin-right: 20px;
+        }
+        .image-recognition img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .upload-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+            box-sizing: border-box;
+
+        }
+        .upload-overlay .filename {
+            flex: 1;
+        }
+        .upload-button {
+            background: #fff;
+            color: #000;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            width: 120px;
+        }
+        .upload-button:hover {
+            opacity: 1;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 20px;
+            width: 120px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            background: #fff;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .result {
+            flex: 1;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="carousel">
+            <img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Image 1">
+            <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Image 2">
+            <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Image 3">
+        </div>
+        <div class="overlay">
+            <h1>安心吃菌 识你所食</h1>
+            <p>帮 你 读 懂 美 味 菌 子 的 “ 真 实 身 份 ”</p>
+        </div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" width="120">
+        </div>
+        <div class="user-center" onclick="location.href='{{ url_for('user.update_info') }}'">用户中心</div>
+        <div class="carousel-indicators">
+            <div class="active" data-index="0"></div>
+            <div data-index="1"></div>
+            <div data-index="2"></div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="image-recognition">
+            <div class="image-area">
+                <img id="uploadedImage" src="{{ url_for('static', filename='images/image4.jpg') }}" alt="Upload Image">
+                <input type="file" accept=".jpg" id="fileInput" style="display: none;">
+                <div class="upload-overlay">
+                    <div class="filename" id="fileName">未选择文件</div>
+                    <button class="upload-button" onclick="document.getElementById('fileInput').click();">上传图片</button>
+                    <div class="dropdown">
+                        <button class="upload-button" onclick="toggleDropdown()">切换AI</button>
+                        <div class="dropdown-content" id="dropdownMenu" style="display: none;">
+                            <button onclick="setAIModel('Alex')">Alex</button>
+                            <button onclick="setAIModel('VGG16')">VGG16</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            <div class="result" id="resultArea">
+                <h2>识别结果：</h2>
+                <p id="recognitionResult">请上传一张图片进行识别。</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.carousel img');
+        const indicators = document.querySelectorAll('.carousel-indicators div');
+        let selectedAIModel = 'classify1'; // 默认的AI模型
+
+        function showSlide(index) {
+            const carousel = document.querySelector('.carousel');
+            carousel.style.transform = `translateX(-${index * 100 / slides.length}%)`;
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentIndex = index;
+                showSlide(currentIndex);
+            });
+        });
+
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        document.querySelector('.carousel').addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+
+        document.querySelector('.carousel').addEventListener('mouseleave', () => {
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'image/jpeg') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('uploadedImage').src = e.target.result;
+                    document.getElementById('fileName').textContent = file.name;
+                    classifyImage(e.target.result);
+                };
+            reader.readAsDataURL(file);
+            } else {
+                alert('请上传一个有效的JPEG图片。');
+            }
+        });
+
+        function classifyImage(imageData) {
+            let endpoint = selectedAIModel === 'classify1' ? '/classify1' : '/classify2';
+            fetch(endpoint, {
+                method: 'POST',
+                body: JSON.stringify({ image: imageData }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('recognitionResult').textContent = data.result;
+            })
+            .catch(error => {
+                console.error('识别失败:', error);
+                document.getElementById('recognitionResult').textContent = '识别失败，请重试。';
+            });
+        }
+
+        function toggleDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function setAIModel(model) {
+            selectedAIModel = model === 'Alex' ? 'classify1' : 'classify2';
+            toggleDropdown();
+        }
+
+    </script>
+</body>
+</html>
