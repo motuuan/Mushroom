@@ -180,18 +180,18 @@
 <body>
     <div class="header">
         <div class="carousel">
-            <img src="image1.jpg" alt="Image 1">
-            <img src="image2.jpg" alt="Image 2">
-            <img src="image3.jpg" alt="Image 3">
+            <img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Image 1">
+            <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Image 2">
+            <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Image 3">
         </div>
         <div class="overlay">
             <h1>安心吃菌 识你所食</h1>
             <p>帮 你 读 懂 美 味 菌 子 的 “ 真 实 身 份 ”</p>
         </div>
         <div class="logo">
-            <img src="logo-white.png" alt="Logo" width="120">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" width="120">
         </div>
-        <div class="user-center">用户中心</div>
+        <div class="user-center" onclick="location.href='{{ url_for('user.update_info') }}'">用户中心</div>
         <div class="carousel-indicators">
             <div class="active" data-index="0"></div>
             <div data-index="1"></div>
@@ -201,23 +201,33 @@
     <div class="content">
         <div class="image-recognition">
             <div class="image-area">
-                <img id="uploadedImage" src="image4.jpg" alt="Upload Image">
-                <input type="file" accept=".jpg" id="fileInput" style="display: none;">
-                <div class="upload-overlay">
-                    <div class="filename" id="fileName">未选择文件</div>
-                    <button class="upload-button" onclick="document.getElementById('fileInput').click();">上传图片</button>
-                    <div class="dropdown">
-                        <button class="upload-button" onclick="toggleDropdown()">切换AI</button>
-                        <div class="dropdown-content" id="dropdownMenu" style="display: none;">
-                            <button onclick="setAIModel('Alex')">Alex</button>
-                            <button onclick="setAIModel('VGG16')">VGG16</button>
+                <img id="uploadedImage" src="{{ url_for('static', filename='images/image4.jpg') }}" alt="Upload Image">
+                <form id="uploadForm" action="{{ url_for('classify.upload_image') }}" method="post" enctype="multipart/form-data">
+                    <input type="file" accept=".jpg" id="fileInput" name="file" style="display: none;" onchange="updateFileName(); this.form.submit();">
+                    <div class="upload-overlay">
+                        <div class="filename" id="fileName">未选择文件</div>
+                        <button type="button" class="upload-button" onclick="document.getElementById('fileInput').click();">上传图片</button>
+                        <div class="dropdown">
+                            <input type="hidden" name="model" id="modelInput" value="alexnet">
+                            <button type="button" class="upload-button" onclick="toggleDropdown()">切换AI</button>
+                            <div class="dropdown-content" id="dropdownMenu" style="display: none;">
+                                <button type="button" onclick="setModel('alexnet')">AlexNet Model</button>
+                                <button type="button" onclick="setModel('vgg')">VGG Model</button>
+                            </div>
                         </div>
-                      </div>
                     </div>
-                </div>
-            <div class="result" id="resultArea">
-                <h2>识别结果：</h2>
-                <p id="recognitionResult">请上传一张图片进行识别。</p>
+                </form>
+            </div>
+            <div class="result">
+                {% if predicted_class is defined and confidence is defined %}
+                    <h2>识别结果</h2>
+                    <p>预测类别: {{ predicted_class }}</p>
+                    <p>置信度: {{ confidence }}</p>
+                {% endif %}
+
+                {% if filename %}
+                    <img class="uploaded-img" src="{{ url_for('classify.uploaded_file', filename=filename) }}" alt="Uploaded Image">
+                {% endif %}
             </div>
         </div>
     </div>
@@ -290,17 +300,20 @@
                 document.getElementById('recognitionResult').textContent = '识别失败，请重试。';
             });
         }
-
         function toggleDropdown() {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+            var dropdownMenu = document.getElementById("dropdownMenu");
+            dropdownMenu.style.display = dropdownMenu.style.display === "none" ? "block" : "none";
         }
 
-        function setAIModel(model) {
-            selectedAIModel = model === 'Alex' ? 'classify1' : 'classify2';
-            toggleDropdown();
+        function setModel(model) {
+            document.getElementById("modelInput").value = model;
+            document.getElementById("dropdownMenu").style.display = "none"; // Close dropdown after selection
         }
 
+        function updateFileName() {
+            var fileName = document.getElementById("fileInput").files[0].name;
+            document.getElementById("fileName").textContent = fileName;
+        }
     </script>
 </body>
 </html>
