@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安心吃菌 识你所食</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+        }
+        .carousel {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 1s ease-in-out;
+        }
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header .overlay h1 {
+            font-size: 4em;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .header .overlay p {
+            font-size: 2em;
+            margin: 20px 0;
+            letter-spacing: 1px;
+        }
+        .header .logo {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+        }
+        .header .user-center {
+            position: absolute;
+            top: 20px;
+            right: 100px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .carousel-indicators div {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            margin: 0 5px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .carousel-indicators .active {
+            transform: scale(1.5);
+        }
+        .content {
+            padding: 20px;
+        }
+        .image-recognition {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 60px;
+        }
+        .image-recognition .image-area {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+            position: relative;
+            margin-right: 20px;
+            border: 1px solid #ccc;
+        }
+        .image-recognition img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .upload-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .upload-overlay .filename {
+            flex: 1;
+        }
+        .upload-button {
+            background: #fff;
+            color: #000;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            width: 120px;
+        }
+        .upload-button:hover {
+            opacity: 1;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 20px;
+            width: 120px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            background: #fff;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+        .dropdown-content button:hover {
+            background-color: #f1f1f1;
+        }
+        .result {
+            flex: 1;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+        .result h2 {
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .result p {
+            margin: 10px 0;
+        }
+        #recognitionResult {
+            margin-top: 20px;
+        }
+        .footer {
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #888;
+            margin-top: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="carousel">
+            <img src="{{ url_for('static', filename='images/image1.jpg') }}" alt="Image 1">
+            <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Image 2">
+            <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Image 3">
+        </div>
+        <div class="overlay">
+            <h1>安心吃菌 识你所食</h1>
+            <p>帮 你 读 懂 美 味 菌 子 的 “ 真 实 身 份 ”</p>
+        </div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Logo" width="120">
+        </div>
+        <div class="user-center" onclick="location.href='{{ url_for('user.update_info') }}'">用户中心</div>
+        <div class="carousel-indicators">
+            <div class="active" data-index="0"></div>
+            <div data-index="1"></div>
+            <div data-index="2"></div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="image-recognition">
+            <div class="image-area">
+                <img id="uploadedImage" src="{{ url_for('static', filename='images/image4.jpg') }}" alt="Uploaded Image">
+                <div class="upload-overlay">
+                    <span class="filename" id="fileName">未选择文件</span>
+                    <button class="upload-button" id="fileInputButton">选择图片</button>
+                    <div class="dropdown">
+                        <button class="upload-button" onclick="toggleDropdown()">切换AI</button>
+                        <div class="dropdown-content" id="dropdownMenu">
+                            <button onclick="setAIModel('alexnet')">AlexNet</button>
+                            <button onclick="setAIModel('vgg')">VGG</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" name="file" style="display: none;">
+            </div>
+            <div class="result">
+                <form id="uploadForm" action="{{ url_for('classify.upload_image') }}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="modelInput" name="model">
+                    <button type="button" class="upload-button" id="uploadButton">上传图片</button>
+                </form>
+                <h2>识别结果</h2>
+                <div id="recognitionResult">
+                    {% if predicted_class is defined and confidence is defined %}
+                        <p>预测类别: {{ predicted_class }}</p>
+                        <p>置信度: {{ confidence }}</p>
+                    {% else %}
+                        <p>请上传一张图片进行识别。</p>
+                    {% endif %}
+
+                    {% if filename %}
+                    <img class="uploaded-img" src="{{ url_for('classify.uploaded_file', filename=filename) }}" alt="Uploaded Image">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        @AAA凯音水果批发
+    </div>
+    <script>
+        let selectedAIModel = 'alexnet'; // 默认的AI模型
+
+        document.getElementById('fileInputButton').addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('uploadedImage').src = e.target.result;
+                    document.getElementById('fileName').textContent = file.name;
+                    classifyImage(e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('请先选择一张图片。');
+                return;
+            }
+
+            // Set the selected AI model
+            document.getElementById('modelInput').value = selectedAIModel;
+
+            // Create a FormData object to send the file
+            const formData = new FormData(document.getElementById('uploadForm'));
+            formData.append('file', file); // Append the file to the FormData
+
+            fetch('{{ url_for("classify.upload_image") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle response from the server
+                if (data.code === -1) {
+                    alert(data.message);
+                } else {
+                    document.getElementById('recognitionResult').innerHTML = `
+                        <p>预测类别: ${data.predicted_class}</p>
+                        <p>置信度: ${data.confidence}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                let errorMessage = '上传失败，请重试。';
+                alert(errorMessage);
+            });
+        });
+
+        function toggleDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function setAIModel(model) {
+            selectedAIModel = model;
+            toggleDropdown();
+        }
+    </script>
+</body>
+</html>
