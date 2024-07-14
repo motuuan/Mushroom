@@ -124,17 +124,18 @@
             flex: 1;
         }
         .upload-button {
-            background: #fff;
-            color: #000;
+            background: #ddd; /* 淡灰色背景 */
+            color: #000; /* 文字颜色保持黑色 */
             padding: 5px 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            opacity: 0.5;
+            opacity: 0.8; /* 可以调整透明度 */
             transition: opacity 0.3s;
             width: 120px;
         }
         .upload-button:hover {
+            background: #bbb; /* 更深的灰色 */
             opacity: 1;
         }
         .dropdown {
@@ -310,7 +311,12 @@
             .catch(error => {
                 console.error('Error:', error);
                 let errorMessage = '上传失败，请重试。';
-                alert(errorMessage);
+                   if (error.message) {
+                       errorMessage += '\n详细错误信息: ' + error.message;
+                   }
+
+                    // Display the error message to the user
+                    alert(errorMessage);
             });
         });
 
@@ -323,6 +329,41 @@
             selectedAIModel = model;
             toggleDropdown();
         }
+
+        // Carousel functionality
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.carousel img');
+        const indicators = document.querySelectorAll('.carousel-indicators div');
+
+        function showSlide(index) {
+            const carousel = document.querySelector('.carousel');
+            carousel.style.transform = `translateX(-${index * 100 / slides.length}%)`;
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentIndex = index;
+                showSlide(currentIndex);
+            });
+        });
+
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        document.querySelector('.carousel').addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+
+        document.querySelector('.carousel').addEventListener('mouseleave', () => {
+            slideInterval = setInterval(nextSlide, 5000);
+        });
     </script>
 </body>
 </html>
